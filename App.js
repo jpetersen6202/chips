@@ -1,11 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
+import { useState } from 'react'
+import Home from './components/Home';
+import PlayerForm from './components/PlayerForm';
+import HouseForm from './components/HouseForm';
 
 export default function App() {
+  const [currentPage, setCurrentPage] = useState('home')
+
+  switch(currentPage) {
+    case 'home':
+      return (
+        <View style={styles.container}>
+          <Home setPage={setCurrentPage}/>
+        </View>
+      )
+
+    case 'playerForm':
+      return (
+        <View style={styles.container}>
+          <PlayerForm pressFunction={setCurrentPage}/>
+        </View>
+      )
+
+    case 'houseForm':
+      return (
+        <View style={styles.container}>
+          <HouseForm pressFunction={setCurrentPage}/>
+        </View>
+      )
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Text>Default Fallback</Text>
     </View>
   );
 }
@@ -13,7 +40,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#35654d',
     alignItems: 'center',
     justifyContent: 'center',
   },
