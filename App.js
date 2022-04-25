@@ -6,7 +6,7 @@ import HouseForm from './components/HouseForm';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home')
-  const [players, setPlayers] = useState([{name: 'Player 1', balance: 0}, {name: 'Player 2', balance: 0}])
+  const [players, setPlayers] = useState([{name: 'Player 1', balance: 1000}, {name: 'Player 2', balance: 1000}])
 
   switch(currentPage) {
     case 'home':

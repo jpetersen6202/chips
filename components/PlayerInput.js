@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import {View, Text, StyleSheet, Dimensions, TextInput} from 'react-native'
+import {View, Text, StyleSheet, TextInput} from 'react-native'
 import { useFonts, BungeeShade_400Regular } from '@expo-google-fonts/bungee-shade'
 import AppLoading from 'expo-app-loading'
 
@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#d9dc00',
     padding: 10,
-    flex: 6
+    flex: 6,
+    backgroundColor: '#427e60'
   },
 
   inputHeader: {

@@ -1,12 +1,18 @@
-import {View, Text, StyleSheet, Dimensions, TouchableHighlight, TextInput} from 'react-native'
+import {View, Text, StyleSheet, Dimensions, TouchableHighlight, TouchableWithoutFeedback, TextInput, Keyboard} from 'react-native'
 import { useFonts, BungeeShade_400Regular } from '@expo-google-fonts/bungee-shade'
+import { useState } from 'react'
+import { Bungee_400Regular } from '@expo-google-fonts/bungee'
 import AppLoading from 'expo-app-loading'
 import Icon from 'react-native-vector-icons/AntDesign'
 import PlayerInput from './PlayerInput'
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes'
 
 export default function PlayerForm({pressFunction, players, updatePlayers}) {
+  let [balance, setBalance] = useState(players[0].balance)
+  
   let [fontsLoaded, error] = useFonts({
     BungeeShade_400Regular,
+    Bungee_400Regular
   })
 
   if (!fontsLoaded) {
@@ -20,7 +26,33 @@ export default function PlayerForm({pressFunction, players, updatePlayers}) {
     return id
   }
 
+  function addPlayer() {
+    updatePlayers(prevState => {
+      const index = prevState.length + 1
+      return [...prevState, {name: `Player ${index}`, balance: balance}]
+    })
+  }
+
+  function removePlayer() {
+    updatePlayers(prevState => {
+      const editable = [...prevState]
+      editable.pop()
+      return editable
+    })
+  }
+
+  function setGlobalBalance() {
+    updatePlayers(prevState => {
+      const editable = [...prevState]
+      editable.forEach(player => {
+        player.balance = balance
+      })
+      return editable
+    })
+  }
+
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.container}>
       
       <Text style={styles.title}>Player VS Player</Text>
@@ -29,7 +61,32 @@ export default function PlayerForm({pressFunction, players, updatePlayers}) {
           {players && players.map((player, index) => (
             <PlayerInput name={player.name} number={index+1} updatePlayers={updatePlayers} key={assignId()}/>
           ))}
+      
+        <View style={styles.playerEditContainer}>
+          <TouchableWithoutFeedback onPress={removePlayer}>
+            <Icon name='minussquareo' size={50} color='#fff'/>
+          </TouchableWithoutFeedback>
+
+          <Text style={{fontFamily: 'Bungee_400Regular', marginHorizontal: 10, color: '#C2C407'}}>Adjust Player Count</Text>
+          
+          <TouchableWithoutFeedback onPress={addPlayer}>
+            <Icon name='plussquareo' size={50} color='#fff'/>
+          </TouchableWithoutFeedback>
+        </View>
+
+        <View style={styles.balanceContainer}>
+          <Text style={{fontFamily: 'Bungee_400Regular', color: '#C2C407'}}>Starting Balance:</Text>
+          <TextInput 
+            style={styles.input}
+            value={balance.toString()}
+            onChangeText={number => setBalance(number)}
+            onEndEditing={setGlobalBalance}
+            keyboardType='number-pad'
+          />
+        </View>
+      
       </View>
+
 
       <TouchableHighlight
         style={styles.backButton}
@@ -41,6 +98,7 @@ export default function PlayerForm({pressFunction, players, updatePlayers}) {
       </TouchableHighlight>
 
     </View>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -53,13 +111,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  input: {
+    borderWidth: 1,
+    borderColor: '#d9dc00',
+    height: 30,
+    width: 100,
+    backgroundColor: '#427e60',
+    textAlign: 'center',
+    marginTop: 8
+  },
+
   namesContainer: {
       marginTop: 230,
-      marginBottom: 120,
+      marginBottom: 10,
       marginHorizontal: 50,
-      //backgroundColor: 'tomato',
       width: Dimensions.get('window').width - 100,
-      flex: 1
+      flex: 1,
+  },
+
+  playerEditContainer: {    
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginBottom: 15
+  },
+
+  balanceContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column'
   },
 
   backButton: {
