@@ -2,8 +2,9 @@ import {View, Text, StyleSheet, Dimensions, TouchableHighlight, TextInput} from 
 import { useFonts, BungeeShade_400Regular } from '@expo-google-fonts/bungee-shade'
 import AppLoading from 'expo-app-loading'
 import Icon from 'react-native-vector-icons/AntDesign'
+import PlayerInput from './PlayerInput'
 
-export default function PlayerForm({pressFunction}) {
+export default function PlayerForm({pressFunction, players, updatePlayers}) {
   let [fontsLoaded, error] = useFonts({
     BungeeShade_400Regular,
   })
@@ -11,30 +12,23 @@ export default function PlayerForm({pressFunction}) {
   if (!fontsLoaded) {
       return <AppLoading />
   }
-  
+
+  let id = 0
+
+  function assignId() {
+    id += 1
+    return id
+  }
+
   return (
     <View style={styles.container}>
       
       <Text style={styles.title}>Player VS Player</Text>
       
       <View style={styles.namesContainer}>
-          <View style={styles.inputRow}>
-            <Text style={styles.inputHeader}>1.</Text>
-            <TextInput
-              style={styles.input}
-              value={'Player 1'}
-              placeholder={'Player Name'}
-            />
-          </View>
-
-          <View style={styles.inputRow}>
-            <Text style={styles.inputHeader}>2.</Text>
-            <TextInput
-              style={styles.input}
-              value={'Player 2'}
-              placeholder={'Player Name'}
-            />
-          </View>
+          {players && players.map((player, index) => (
+            <PlayerInput name={player.name} number={index+1} updatePlayers={updatePlayers} key={assignId()}/>
+          ))}
       </View>
 
       <TouchableHighlight
@@ -51,25 +45,6 @@ export default function PlayerForm({pressFunction}) {
 }
 
 const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderColor: 'black',
-    padding: 10,
-    flex: 6
-  },
-
-  inputHeader: {
-    fontSize: 24,
-    fontFamily: "BungeeShade_400Regular",
-    flex: 1,
-    marginTop: 5
-  },
-
-  inputRow: {
-    flexDirection: 'row',
-    marginBottom: 15
-  },
-  
   container: {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
@@ -100,6 +75,7 @@ const styles = StyleSheet.create({
       fontSize: 30,
       fontFamily: "BungeeShade_400Regular",
       position: 'absolute',
-      top: 150
+      top: 150,
+      color: '#C2C407'
   },
 });

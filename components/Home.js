@@ -14,7 +14,7 @@ export default function Home({setPage}) {
   
     return (
     <View style={styles.container}>
-        <Text style={styles.title}>Chips</Text>
+        <Text style={styles.title}>- Chips -</Text>
         <Image
             style={styles.logo} 
             source={require('../assets/chipsClipArt.png')}
@@ -51,5 +51,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         fontSize: 48,
         fontFamily: "BungeeShade_400Regular",
+        color: '#C2C407',
     },
   });
