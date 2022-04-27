@@ -5,7 +5,6 @@ import { Bungee_400Regular } from '@expo-google-fonts/bungee'
 import AppLoading from 'expo-app-loading'
 import Icon from 'react-native-vector-icons/AntDesign'
 import PlayerInput from './PlayerInput'
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes'
 
 export default function PlayerForm({pressFunction, players, updatePlayers}) {
   let [balance, setBalance] = useState(players[0].balance)
@@ -97,6 +96,15 @@ export default function PlayerForm({pressFunction, players, updatePlayers}) {
         <Icon name='back' size={40} color='#DE1D1D'/>
       </TouchableHighlight>
 
+      <TouchableHighlight
+        style={styles.nextButton}
+        activeOpacity={0.6}
+        underlayColor='#2a513e'
+        onPress={() => pressFunction('playerGame')}
+      >
+        <Icon name='arrowright' size={40} color='#3af109'/>
+      </TouchableHighlight>
+
     </View>
     </TouchableWithoutFeedback>
   )
@@ -147,6 +155,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 50,
     left: 30,
+    padding: 2
+  },
+
+  nextButton: {
+    borderRadius: 30,
+    position: 'absolute',
+    bottom: 50,
+    right: 30,
     padding: 2
   },
 

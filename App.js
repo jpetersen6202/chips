@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Home from './components/Home';
 import PlayerForm from './components/PlayerForm';
 import HouseForm from './components/HouseForm';
+import PlayerGame from './components/PlayerGame';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home')
@@ -27,6 +28,13 @@ export default function App() {
       return (
         <View style={styles.container}>
           <HouseForm pressFunction={setCurrentPage}/>
+        </View>
+      )
+
+    case 'playerGame':
+      return (
+        <View style={styles.container}>
+          <PlayerGame pressFunction={setCurrentPage} players={players} updatePlayers={setPlayers}/>
         </View>
       )
   }
