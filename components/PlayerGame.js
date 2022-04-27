@@ -1,10 +1,15 @@
 import {useState} from 'react'
 import {View, Text, TouchableWithoutFeedback, Keyboard, StyleSheet, Dimensions, TouchableHighlight} from 'react-native'
 import Icon from 'react-native-vector-icons/AntDesign'
+import BetButton from './BetButton'
 
 export default function PlayerGame({pressFunction, players, updatePlayers}) {
   const [currentPlayer, setCurrentPlayer] = useState(players[0])
+  const [bet, setBet] = useState(0)
+  const [balance, setBalance] = useState(currentPlayer.balance)
+  
   const startingBalance = currentPlayer.balance
+  const chipTypes = [1, 5, 10, 25, 50, 100]
 
   function goHome() {
       setGlobalBalance(startingBalance)
@@ -21,6 +26,19 @@ export default function PlayerGame({pressFunction, players, updatePlayers}) {
     })
   }
 
+  function addToBet(value) {
+    setBet(prevState => prevState += value)
+    const newBalance = balance - value
+    setBalance(newBalance)
+  }
+
+  let id = 99
+
+  function assignId() {
+    id += 1
+    return id
+  }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.container}>
@@ -35,7 +53,13 @@ export default function PlayerGame({pressFunction, players, updatePlayers}) {
 
             <Text style={styles.title}>{currentPlayer.name}</Text>
             <View style={styles.balanceContainer}>
-                <Text style={styles.balanceText}>{`$${currentPlayer.balance}`}</Text>
+                <Text style={styles.balanceText}>{`$${balance}`}</Text>
+            </View>
+
+            <View style={styles.buttonContainer}>
+                {chipTypes.map(chip => (
+                    <BetButton text={`+ $${chip} `} value={chip} pressFunction={() => addToBet(chip)} key={assignId()}/>
+                ))}
             </View>
 
         </View>
@@ -51,6 +75,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#35654d',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+
+    buttonContainer: {
+        marginTop: 150
+        //backgroundColor: 'tomato',
     },
 
     title: {
