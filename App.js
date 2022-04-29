@@ -34,7 +34,7 @@ export default function App() {
     case 'playerGame':
       return (
         <View style={styles.container}>
-          <PlayerGame pressFunction={setCurrentPage} players={players} updatePlayers={setPlayers}/>
+          <PlayerGame pressFunction={setCurrentPage} playersPassed={players} updatePlayers={setPlayers}/>
         </View>
       )
   }

@@ -2,22 +2,27 @@ import {useState} from 'react'
 import {View, Text, TouchableWithoutFeedback, Keyboard, StyleSheet, Dimensions, TouchableHighlight} from 'react-native'
 import Icon from 'react-native-vector-icons/AntDesign'
 import BetButton from './BetButton'
+import CustomButton from './CustomButton'
 
-export default function PlayerGame({pressFunction, players, updatePlayers}) {
+export default function PlayerGame({pressFunction, playersPassed, updatePlayers}) {
+    //TODO: add bet as player field to track what's required to call
+  const [players, setPlayers] = useState(playersPassed) //making a local copy to prevent re-render
   const [currentPlayer, setCurrentPlayer] = useState(players[0])
+  const [phase, setPhase] = useState('preflop')
+  const [pot, setPot] = useState(0)
+  const [betRequired, setBetRequired] = useState(0)
   const [bet, setBet] = useState(0)
   const [balance, setBalance] = useState(currentPlayer.balance)
   
-  const startingBalance = currentPlayer.balance
   const chipTypes = [1, 5, 10, 25, 50, 100]
 
   function goHome() {
-      setGlobalBalance(startingBalance)
+      setGlobalBalance(1000)
       pressFunction('home')
   }
   
   function setGlobalBalance(value) {
-    updatePlayers(prevState => {
+    setPlayers(prevState => {
       const editable = [...prevState]
       editable.forEach(player => {
         player.balance = value
@@ -30,6 +35,36 @@ export default function PlayerGame({pressFunction, players, updatePlayers}) {
     setBet(prevState => prevState += value)
     const newBalance = balance - value
     setBalance(newBalance)
+  }
+
+  function resetBet() {
+      setBet(0)
+      setBalance(currentPlayer.balance)
+  }
+
+  function submitBet() {
+    setPlayers(prevState => {
+        const editable = [...prevState]
+        const player = editable.find(player => player.name == currentPlayer.name)
+        player.balance = balance
+        return editable
+    })
+    setPot(bet)
+    if(bet > betRequired) setBetRequired(bet)
+    setBet(0)
+    nextPlayer()
+  }
+
+  function nextPlayer() {
+      const playerNumber = players.length
+      const currentIndex = players.indexOf(currentPlayer)
+      if(currentIndex < (playerNumber-1)){
+          setCurrentPlayer(players[currentIndex + 1])
+          setBalance(players[currentIndex + 1].balance)
+      } else {
+          setCurrentPlayer(players[0])
+          setBalance(players[0].balance)
+      }
   }
 
   let id = 99
@@ -62,9 +97,31 @@ export default function PlayerGame({pressFunction, players, updatePlayers}) {
                 ))}
             </View>
 
+            <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15}}>
+                {betButton('Reset Bet', resetBet)}
+                <Text style={{fontFamily: 'Bungee_400Regular', color: '#C2C407', fontSize: 20}}>{`$${bet}`}</Text>
+                {betButton('Submit Bet', submitBet)}        
+            </View>
+            {(betRequired > 0) && <Text style={{fontFamily: 'Bungee_400Regular', color: '#C22121', fontSize: 12, marginTop: 12}}>{`Minimum bet: $${betRequired}`}</Text>}
+
         </View>
     </TouchableWithoutFeedback>
   )
+}
+
+function betButton(text, pressFunction) {
+    return (
+        <View style={{marginHorizontal: 15}}>
+            <TouchableHighlight
+                style={styles.betButton}
+                activeOpacity={0.6}
+                underlayColor='#2a513e'
+                onPress={pressFunction}
+            >
+                <Text style={styles.betButtonText}>{text}</Text>
+            </TouchableHighlight>
+        </View>
+    )
 }
 
 
@@ -79,7 +136,22 @@ const styles = StyleSheet.create({
 
     buttonContainer: {
         marginTop: 150
-        //backgroundColor: 'tomato',
+    },
+
+    betButton: {
+        paddingTop: 15,
+        paddingBottom: 15,
+        width: 125,
+        borderRadius: 30,
+        borderWidth: 2,
+        borderColor: '#C2C407',
+        backgroundColor: '#427e60',
+    },
+
+    betButtonText: {
+        textAlign: 'center',
+        color: '#fff',
+        fontFamily: 'Bungee_400Regular'
     },
 
     title: {
