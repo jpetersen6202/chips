@@ -102,9 +102,10 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
             <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 15}}>
                 {betButton('Reset Bet', resetBet)}
                 <Text style={{fontFamily: 'Bungee_400Regular', color: '#C2C407', fontSize: 20}}>{`$${bet}`}</Text>
-                {betButton('Submit Bet', submitBet)}        
+                {(currentPlayer.bet + bet >= maxBet) && betButton('Submit Bet', submitBet)}
+                {(currentPlayer.bet + bet < maxBet) && betButton('fold', () => alert('TODO: fold function'))}     
             </View>
-            {(maxBet > 0 && currentPlayer.bet < maxBet) && <Text style={{fontFamily: 'Bungee_400Regular', color: '#C22121', fontSize: 12, marginTop: 12}}>{`bet to call: $${maxBet - currentPlayer.bet}`}</Text>}
+            {(maxBet > 0 && currentPlayer.bet < maxBet) && <Text style={{fontFamily: 'Bungee_400Regular', color: '#DC2D2D', fontSize: 12, marginTop: 12}}>{`bet to call: $${maxBet - currentPlayer.bet}`}</Text>}
 
         </View>
     </TouchableWithoutFeedback>
@@ -112,18 +113,33 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
 }
 
 function betButton(text, pressFunction) {
-    return (
-        <View style={{marginHorizontal: 15}}>
-            <TouchableHighlight
-                style={styles.betButton}
-                activeOpacity={0.6}
-                underlayColor='#2a513e'
-                onPress={pressFunction}
-            >
+    if(text !== 'fold') {
+        return (
+            <View style={{marginHorizontal: 15}}>
+                <TouchableHighlight
+                    style={styles.betButton}
+                    activeOpacity={0.6}
+                    underlayColor='#2a513e'
+                    onPress={pressFunction}
+                >
+                    <Text style={styles.betButtonText}>{text}</Text>
+                </TouchableHighlight>
+            </View>
+        )
+    } else {
+        return (
+            <View style={{marginHorizontal: 15}}>
+                <TouchableHighlight
+                    style={[styles.betButton, {backgroundColor: 'red'}]}
+                    activeOpacity={0.6}
+                    underlayColor='#2a513e'
+                    onPress={pressFunction}
+                >
                 <Text style={styles.betButtonText}>{text}</Text>
-            </TouchableHighlight>
-        </View>
-    )
+                </TouchableHighlight>
+            </View>
+        )
+    }
 }
 
 
