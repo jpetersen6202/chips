@@ -3,6 +3,7 @@ import {View, Text, TouchableWithoutFeedback, Keyboard, StyleSheet, Dimensions, 
 import Icon from 'react-native-vector-icons/AntDesign'
 import BetButton from './BetButton'
 import CustomButton from './CustomButton'
+import PlayerInput from './PlayerInput'
 
 export default function PlayerGame({pressFunction, playersPassed, updatePlayers}) {
     //TODO: add bet as player field to track what's required to call
@@ -10,7 +11,7 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
   const [currentPlayer, setCurrentPlayer] = useState(players[0])
   const [phase, setPhase] = useState('preflop')
   const [pot, setPot] = useState(0)
-  const [betRequired, setBetRequired] = useState(0)
+  const [maxBet, setMaxBet] = useState(0)
   const [bet, setBet] = useState(0)
   const [balance, setBalance] = useState(currentPlayer.balance)
   
@@ -47,10 +48,11 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
         const editable = [...prevState]
         const player = editable.find(player => player.name == currentPlayer.name)
         player.balance = balance
+        player.bet = bet
         return editable
     })
     setPot(bet)
-    if(bet > betRequired) setBetRequired(bet)
+    if(bet > maxBet) setMaxBet(bet)
     setBet(0)
     nextPlayer()
   }
@@ -102,7 +104,7 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
                 <Text style={{fontFamily: 'Bungee_400Regular', color: '#C2C407', fontSize: 20}}>{`$${bet}`}</Text>
                 {betButton('Submit Bet', submitBet)}        
             </View>
-            {(betRequired > 0) && <Text style={{fontFamily: 'Bungee_400Regular', color: '#C22121', fontSize: 12, marginTop: 12}}>{`Minimum bet: $${betRequired}`}</Text>}
+            {(maxBet > 0 && currentPlayer.bet < maxBet) && <Text style={{fontFamily: 'Bungee_400Regular', color: '#C22121', fontSize: 12, marginTop: 12}}>{`bet to call: $${maxBet - currentPlayer.bet}`}</Text>}
 
         </View>
     </TouchableWithoutFeedback>

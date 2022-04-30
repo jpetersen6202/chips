@@ -7,7 +7,7 @@ import PlayerGame from './components/PlayerGame';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home')
-  const [players, setPlayers] = useState([{name: 'Player 1', balance: 1000}, {name: 'Player 2', balance: 1000}])
+  const [players, setPlayers] = useState([{name: 'Player 1', balance: 1000, bet: 0}, {name: 'Player 2', balance: 1000, bet: 0}])
 
   switch(currentPage) {
     case 'home':
