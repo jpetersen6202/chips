@@ -48,10 +48,13 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
         const editable = [...prevState]
         const player = editable.find(player => player.name == currentPlayer.name)
         player.balance = balance
-        player.bet = bet
+        player.bet += bet
         return editable
     })
-    setPot(bet)
+    setPot(prevState => {
+        const edit = prevState
+        return edit + bet
+    })
     if(bet > maxBet) setMaxBet(bet)
     setBet(0)
     nextPlayer()
@@ -85,7 +88,7 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
                 underlayColor='#2a513e'
                 onPress={goHome}
             >
-                <Icon name='home' size={40} color='#cccccc'/>
+                <Icon name='home' size={30} color='#cccccc'/>
             </TouchableHighlight>
 
             <Text style={styles.title}>{currentPlayer.name}</Text>
@@ -106,6 +109,9 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
                 {(currentPlayer.bet + bet < maxBet) && betButton('fold', () => alert('TODO: fold function'))}     
             </View>
             {(maxBet > 0 && currentPlayer.bet < maxBet) && <Text style={{fontFamily: 'Bungee_400Regular', color: '#DC2D2D', fontSize: 12, marginTop: 12}}>{`bet to call: $${maxBet - currentPlayer.bet}`}</Text>}
+
+            <Text style={styles.pot}>POT</Text>
+            <Text style={[styles.balanceText, {fontSize: 24, marginTop: 10, marginBottom: 0}]}>{`$${pot}`}</Text>
 
         </View>
     </TouchableWithoutFeedback>
@@ -153,7 +159,7 @@ const styles = StyleSheet.create({
     },
 
     buttonContainer: {
-        marginTop: 150
+        marginTop: 120
     },
 
     betButton: {
@@ -177,13 +183,22 @@ const styles = StyleSheet.create({
         fontSize: 42,
         fontFamily: "BungeeShade_400Regular",
         position: 'absolute',
-        top: 150,
+        top: 120,
         color: '#C2C407'
+    },
+
+    pot: {
+        marginTop: 20,
+        fontSize: 40,
+        fontFamily: "BungeeShade_400Regular",
+        color: '#C2C407'
+        //color: '#CCCCCC'
+        //color: '#B87333'
     },
 
     balanceContainer:{
         position: 'absolute',
-        top: 220,
+        top: 190,
         flexDirection: 'row'
     },
 
