@@ -26,6 +26,7 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
       const editable = [...prevState]
       editable.forEach(player => {
         player.balance = value
+        player.bet = 0
         player.fold = false
       })
       return editable
