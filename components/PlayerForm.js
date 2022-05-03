@@ -28,7 +28,7 @@ export default function PlayerForm({pressFunction, players, updatePlayers}) {
   function addPlayer() {
     updatePlayers(prevState => {
       const index = prevState.length + 1
-      return [...prevState, {name: `Player ${index}`, balance: balance}]
+      return [...prevState, {name: `Player ${index}`, balance: balance, bet: 0, fold: false}]
     })
   }
 

@@ -6,7 +6,6 @@ import CustomButton from './CustomButton'
 import PlayerInput from './PlayerInput'
 
 export default function PlayerGame({pressFunction, playersPassed, updatePlayers}) {
-    //TODO: add bet as player field to track what's required to call
   const [players, setPlayers] = useState(playersPassed) //making a local copy to prevent re-render
   const [currentPlayer, setCurrentPlayer] = useState(players[0])
   const [phase, setPhase] = useState('preflop')
@@ -27,6 +26,7 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
       const editable = [...prevState]
       editable.forEach(player => {
         player.balance = value
+        player.fold = false
       })
       return editable
     })
@@ -55,21 +55,33 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
         const edit = prevState
         return edit + bet
     })
-    if(bet > maxBet) setMaxBet(bet)
+    if(currentPlayer.bet > maxBet) setMaxBet(currentPlayer.bet)
     setBet(0)
     nextPlayer()
   }
 
   function nextPlayer() {
-      const playerNumber = players.length
-      const currentIndex = players.indexOf(currentPlayer)
+      const notFolded = players.filter(player => player.fold == false)
+      const playerNumber = notFolded.length
+      const currentIndex = notFolded.indexOf(currentPlayer)
       if(currentIndex < (playerNumber-1)){
-          setCurrentPlayer(players[currentIndex + 1])
-          setBalance(players[currentIndex + 1].balance)
+          setCurrentPlayer(notFolded[currentIndex + 1])
+          setBalance(notFolded[currentIndex + 1].balance)
       } else {
-          setCurrentPlayer(players[0])
-          setBalance(players[0].balance)
+          setCurrentPlayer(notFolded[0])
+          setBalance(notFolded[0].balance)
       }
+  }
+
+  function handleFold() {
+      const foldingName = currentPlayer.name
+      nextPlayer()
+      setPlayers(prevState => {
+          const editable = [...prevState]
+          const player = editable.find(player => player.name == foldingName)
+          player.fold = true
+          return editable
+      })
   }
 
   let id = 99
@@ -106,7 +118,7 @@ export default function PlayerGame({pressFunction, playersPassed, updatePlayers}
                 {betButton('Reset Bet', resetBet)}
                 <Text style={{fontFamily: 'Bungee_400Regular', color: '#C2C407', fontSize: 20}}>{`$${bet}`}</Text>
                 {(currentPlayer.bet + bet >= maxBet) && betButton('Submit Bet', submitBet)}
-                {(currentPlayer.bet + bet < maxBet) && betButton('fold', () => alert('TODO: fold function'))}     
+                {(currentPlayer.bet + bet < maxBet) && betButton('fold', handleFold)}     
             </View>
             {(maxBet > 0 && currentPlayer.bet < maxBet) && <Text style={{fontFamily: 'Bungee_400Regular', color: '#DC2D2D', fontSize: 12, marginTop: 12}}>{`bet to call: $${maxBet - currentPlayer.bet}`}</Text>}
 
